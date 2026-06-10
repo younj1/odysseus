@@ -508,6 +508,32 @@ def gateway_cmd():
     interactive_gateway()
 
 
+@cli.group(name="import")
+def import_group():
+    """Import conversations from Claude, ChatGPT, markdown, text."""
+    pass
+
+
+@import_group.command(name="file")
+@click.argument("filepath")
+@click.option("--no-vault", is_flag=True, help="Skip saving to vault")
+@click.option("--no-training", is_flag=True, help="Skip adding to training data")
+def import_file_cmd(filepath, no_vault, no_training):
+    """Import a single file (JSON, MD, TXT, ZIP)."""
+    from aria.importer import import_file
+    import_file(filepath, to_vault=not no_vault, to_training=not no_training)
+
+
+@import_group.command(name="folder")
+@click.argument("folder")
+@click.option("--no-vault", is_flag=True, help="Skip saving to vault")
+@click.option("--no-training", is_flag=True, help="Skip adding to training data")
+def import_folder_cmd(folder, no_vault, no_training):
+    """Import all files from a folder."""
+    from aria.importer import import_folder
+    import_folder(folder, to_vault=not no_vault, to_training=not no_training)
+
+
 def main():
     cli()
 
