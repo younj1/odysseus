@@ -179,12 +179,28 @@ class ChatProcessor:
         preface = []
         rag_sources = []
 
-        # Add preset system prompt if specified
+        # ── ARIA: Domain-specific system prompt injection ──
+        # If the user set a preset prompt, that takes priority.
+        # Otherwise, ARIA routes the query and injects the best prompt.
         if preset_system_prompt:
             preface.append({
                 "role": "system",
                 "content": preset_system_prompt
             })
+        else:
+            try:
+                from aria.hook import get_aria_system_prompt, is_aria_enabled
+                if is_aria_enabled():
+                    aria_prompt = get_aria_system_prompt(message)
+                    if aria_prompt:
+                        preface.append({
+                            "role": "system",
+                            "content": aria_prompt
+                        })
+            except ImportError:
+                pass  # ARIA not installed
+            except Exception as _e:
+                logger.warning(f"ARIA prompt injection failed: {_e}")
         if not agent_mode:
             try:
                 from src.user_time import current_datetime_prompt

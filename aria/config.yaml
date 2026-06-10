@@ -1,0 +1,110 @@
+routing:
+  enabled: true
+  default_model: "qwen3:8b"
+  models:
+    general: "qwen3:8b"
+    coding: "qwen2.5-coder:7b"
+    security: "qwen3:8b"
+    lightweight: "nemotron-3-nano:4b"
+  coding_keywords:
+    - "code"
+    - "coding"
+    - "python"
+    - "javascript"
+    - "function"
+    - "class"
+    - "debug"
+    - "error"
+    - "bug"
+    - "compile"
+    - "syntax"
+    - "algorithm"
+    - "api"
+    - "database"
+    - "sql"
+    - "git"
+    - "docker"
+    - "deploy"
+    - "react"
+    - "fastapi"
+    - "pip"
+    - "import"
+    - "refactor"
+    - "test"
+    - "regex"
+    - "script"
+    - "server"
+    - "middleware"
+    - "async"
+    - "array"
+    - "exception"
+    - "traceback"
+  security_keywords:
+    - "security"
+    - "vulnerability"
+    - "exploit"
+    - "xss"
+    - "csrf"
+    - "sql injection"
+    - "buffer overflow"
+    - "penetration"
+    - "pentest"
+    - "nmap"
+    - "firewall"
+    - "encryption"
+    - "brute force"
+    - "malware"
+    - "phishing"
+    - "authentication"
+    - "oauth"
+    - "jwt"
+    - "ssl"
+    - "tls"
+    - "vpn"
+    - "cve"
+    - "hardening"
+    - "forensics"
+    - "ddos"
+    - "ransomware"
+    - "backdoor"
+    - "zero day"
+    - "threat model"
+    - "attack surface"
+
+guardrails:
+  enabled: true
+  input:
+    blocked_patterns: []
+    max_message_length: 0
+  output:
+    blocked_patterns: []
+  require_confirmation:
+    - "rm -rf"
+    - "rm -r"
+    - "format"
+    - "mkfs"
+    - "dd if="
+    - "chmod 777"
+    - "shutdown"
+    - "reboot"
+    - "DROP TABLE"
+    - "DROP DATABASE"
+    - "DELETE FROM"
+    - "TRUNCATE"
+  audit:
+    enabled: true
+    log_file: "data/aria_audit.log"
+    log_inputs: true
+    log_outputs: true
+    log_model_used: true
+    log_route_decision: true
+
+prompts:
+  directory: "aria/prompts"
+  default: "general"
+
+obsidian:
+  enabled: true
+  vault_path: ""
+  api_url: "http://172.19.16.1:27123"
+  api_key: "c251535bb0e04e3852e05bd8c2c708bb9edad12508dfb108fbf6d97730e31376"

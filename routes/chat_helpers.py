@@ -456,6 +456,30 @@ async def build_chat_context(
     This is the shared logic between /chat and /chat_stream — preset extraction,
     message preprocessing, memory/RAG/web injection, compaction, normalization.
     """
+    # ── ARIA: Input guardrail check ──
+    try:
+        from aria.hook import pre_chat, is_aria_enabled
+        if is_aria_enabled():
+            _aria_user = get_current_user(request)
+            _aria_allowed, _aria_block_reason, _aria_route = pre_chat(
+                message=message,
+                user=_aria_user,
+                session_id=session_id,
+                current_model=getattr(sess, 'model', None),
+            )
+            if not _aria_allowed:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"ARIA guardrail: {_aria_block_reason}"
+                )
+            request.state.aria_route = _aria_route
+    except ImportError:
+        pass  # ARIA not installed
+    except HTTPException:
+        raise  # Re-raise guardrail block
+    except Exception as _e:
+        logger.warning(f"ARIA pre_chat failed (non-fatal): {_e}")
+
     # Preset
     preset = extract_preset(chat_handler, preset_id)
 
